@@ -21,22 +21,26 @@ const rows = rowDatas.splice(1);
 rows.map((row) => row.unshift("1"));
 
 let index = 0;
+let time = new Array();
 
 //DB 연결
-appData
-  .initialize()
-  .then(() => {
-    console.log("DataSource has been initialized!!");
-    //1초 간격으로 MockData Upload
-    setInterval(insertData, 1000);
-  })
-  .catch((err) => {
-    console.error("Error during DataSource intitialization", err);
-    appData.destroy();
-  });
+const uploader = () => {
+  appData
+    .initialize()
+    .then(() => {
+      console.log("DataSource has been initialized!!");
+      //1초 간격으로 MockData Upload
+      setInterval(insertData, 1000);
+    })
+    .catch((err) => {
+      console.error("Error during DataSource intitialization", err);
+      appData.destroy();
+    });
+};
 
 //Mock Data UpLoad 합수
 const insertData = () => {
+  const startTime = performance.now();
   if (index < rows.length) {
     appData.query(
       `INSERT INTO data (WellId, Flow, Static, Diff, Casing, Temp, Roads)
@@ -44,8 +48,20 @@ const insertData = () => {
       [rows[index]]
     );
     index++;
+    console.log(`${index}번째 데이터 업로드 완료`);
   } else {
     index = 0;
-    return;
+    time = new Array();
   }
+  //처리 속도 측정
+  const endTime = performance.now();
+  const deltaTime = endTime - startTime;
+  time.push(deltaTime);
 };
+
+//처리 속도 전달
+const getTimeArray = () => {
+  return time[index];
+};
+
+module.exports = { uploader, getTimeArray };
