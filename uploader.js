@@ -61,7 +61,8 @@ const insertData = () => {
 
 //처리 속도 전달
 const getTimeArray = () => {
-  return time[index];
+  console.log(time[index-1]);
+  return time[index-1];
 };
 
 module.exports = { uploader, getTimeArray };
