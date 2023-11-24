@@ -23,16 +23,16 @@ const appData = new DataSource({
   database: process.env.DB_DATABASE,
 });
 
+//빈값 null 처리
 const nullDataChange = (datas) => {
-  const index = datas.indexOf("");
-  if(index === -1){
-    return;
-  } else {
+  while(datas.includes("")){
+    const index = datas.indexOf("");
     datas[index] = null;
   }
 }
 
 const files = fs.readdirSync(dir);
+
 //데이터 전처리
 for (let i = 0; i < files.length; i++) {
   const newData = new WellData();
@@ -56,7 +56,6 @@ for (let i = 0; i < files.length; i++) {
   wellArray.push(well);
 }
 
-
 let index = 0;
 let time = new Array();
 
@@ -78,7 +77,7 @@ const uploader = () => {
 //Data UpLoad 합수
 const insertData = () => {
   const startTime = performance.now();
-  if (index < dataArray[0].data.length) {
+  if (index < dataArray[0].data[0].length) {
     for(let i = 0; i < dataArray.length; i++) {
       appData.query(
         `INSERT INTO data (WellId, CurrentTime, GasFlowRate, TodayFlow, FlowTimeToday, StaticPressure, DiffPressure, Temperature, CondenstateToday, ESDZSO, HighSepLevel, OrificePlate, Voltage)
@@ -97,28 +96,6 @@ const insertData = () => {
     time = new Array();
   }
 };
-
-// const insertData = () => {
-//   const startTime = performance.now();
-//   if (index < rows.length) {
-//     appData.query(
-//       `INSERT INTO data (WellId, Flow, Static, Diff, Casing, Temp, Roads)
-//       VALUES (?);`,
-//       // INSERT INTO data (WellId, GasFlowRate, TodayFlow, FlowTimeToday, StaticPressure, DiffPressure, Temperature, CondenstateToday, ESDZSO, HighSepLevel, OrificePlate, Voltage)
-//       // VALUES (?);,
-//       [rows[index]]
-//     );
-//     index++;
-//     console.log(`${index}번째 데이터 업로드 완료`);
-//   } else {
-//     index = 0;
-//     time = new Array();
-//   }
-//   //처리 속도 측정
-//   const endTime = performance.now();
-//   const deltaTime = endTime - startTime;
-//   time.push(deltaTime);
-// };
 
 //처리 속도 전달
 const getTimeArray = () => {
