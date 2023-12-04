@@ -77,7 +77,7 @@ const uploader = () => {
 //Data UpLoad 합수
 const insertData = () => {
   const startTime = performance.now();
-  if (index < dataArray[0].data[0].length) {
+  if (index < dataArray[0].data.length) {
     for(let i = 0; i < dataArray.length; i++) {
       appData.query(
         `INSERT INTO data (WellId, CurrentTime, GasFlowRate, TodayFlow, FlowTimeToday, StaticPressure, DiffPressure, Temperature, CondenstateToday, ESDZSO, HighSepLevel, OrificePlate, Voltage)
